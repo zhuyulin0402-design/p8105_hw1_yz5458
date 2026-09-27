@@ -34,8 +34,7 @@ penguin_plot =
       y = flipper_length_mm,
       color = species
     )
-  ) +
-  geom_point()
+  ) + geom_point()
 
 penguin_plot
 ```

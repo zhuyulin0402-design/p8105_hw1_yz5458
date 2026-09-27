@@ -2,29 +2,114 @@
 title: "Homework 1"
 author: "Yulin Zhu"
 date: "2026-09-27"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+# Problem 1
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```{r}
+library(ggplot2)
 
-```{r cars}
-summary(cars)
+data("penguins", package = "palmerpenguins")
 ```
 
-## Including Plots
+The penguins dataset contains information about penguins from three pengunins species.
+Important variables in the dataset include `species`, `island`, `bill_length_mm`,
+`bill_depth_mm`, `flipper_length_mm`, `body_mass_g`, `sex`, and `year`.
+The dataset contains `r nrow(penguins)` rows and `r ncol(penguins)` columns.
+The mean flipper length is
+`r round(mean(penguins$flipper_length_mm, na.rm = TRUE), 2)` mm.
 
-You can also embed plots, for example:
+```{r}
+penguin_plot =
+  ggplot(
+    penguins,
+    aes(
+      x = bill_length_mm,
+      y = flipper_length_mm,
+      color = species
+    )
+  ) +
+  geom_point()
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+penguin_plot
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+ggsave(
+  "penguin_scatterplot.png",
+  plot = penguin_plot
+)
+```
+
+
+
+
+
+
+
+
+# Problem 2
+
+```{r}
+library(tidyverse)
+
+problem2_df = 
+  tibble (
+    random_sample= rnorm(10),
+    logical_vector = random_sample > 0,
+    character_vector = c("a","b","c","d","e","f","g","h","i","j"),
+    factor_vector = factor(
+      c("low", "medium", "high", "low", "medium",
+        "high", "low", "medium", "high", "low")
+    )    
+  )
+```
+
+```{r}
+mean(pull(problem2_df, random_sample))
+
+mean(pull(problem2_df, logical_vector))
+
+mean(pull(problem2_df, character_vector))
+
+mean(pull(problem2_df, factor_vector))
+```
+
+FIrstly the mean of the numeric variable works because `random_sample` is numeric. The mean of the logical variable also works. In R, logical values are treated numerically when calculating the mean: TRUE is treated as 1 and FALSE is treated as 0. Therefore, the mean of the logical vector represents the proportion of observations that are TRUE, which is same as the proportion of values in the random sample that are greater than 0 in this case.
+
+The character and factor variables do not produce meaningful means because they are not numeric variables.
+
+```{r, results='hide'}
+as.numeric(pull(problem2_df, logical_vector))
+
+as.numeric(pull(problem2_df, character_vector))
+
+as.numeric(pull(problem2_df, factor_vector))
+```
+
+Applying `as.numeric()` to the logical vector converts `TRUE` to 1 and `FALSE` to 0. 
+This explains why taking the mean of a logical variable works.Applying it to the 
+character vector produces `NA` values because the character values such as `"a"` 
+and `"b"` cannot be directly interpreted as numbers. Applying it to the factor vector 
+converts the factor levels to their underlying integer codes. For example, the three 
+factor levels are internally represented by integers such as 1, 2, and 3.
+I think these results help explain why the mean works for numeric and logical variables, 
+but not for character or factor variables.
+
+
+
+
+
+
+
+
+
+
+
+
